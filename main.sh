@@ -19,4 +19,4 @@ which git-secret-protect || { echo "git-secret-protect not found"; exit 1; }
 
 echo "Decrypting files using filter: $FILTER_NAME"
 
-git-secret-protect decrypt-files "$FILTER_NAME"
+git-secret-protector decrypt-files "$FILTER_NAME"
