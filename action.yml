@@ -13,7 +13,7 @@ inputs:
 
 runs:
   using: 'docker'
-  image: 'Dockerfile'
+  image: 'docker://ghcr.io/c0x12c/gh-actions-git-secret-protector:0.1.0'
   entrypoint: '/main.sh'
   post-entrypoint: '/post.sh'
   args:

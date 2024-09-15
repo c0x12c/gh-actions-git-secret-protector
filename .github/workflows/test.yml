@@ -37,8 +37,8 @@ jobs:
       - name: Generate AES Key and IV using OpenSSL
         run: |
           # Generate a 32-byte AES key (256 bits) and a 16-byte IV (128 bits)
-          AES_KEY=$(openssl rand 32 | base64)  # Generate and encode in Base64
-          IV=$(openssl rand 16 | base64)  # Generate and encode in Base64
+          AES_KEY=$(openssl rand 32 | base64)
+          IV=$(openssl rand 16 | base64)
 
           # Create directory for key/IV storage
           mkdir -p .git_secret_protector/cache
@@ -51,7 +51,7 @@ jobs:
           }
           EOF
 
-      - name: Create a test file for encryption/decryption
+      - name: Prepare test file
         run: |
           echo "This is a secret test file." > test-file.txt
 
@@ -63,26 +63,16 @@ jobs:
           git add .
           git commit --allow-empty-message --message=''
 
-      - name: Prepare test file
-        run: |
-          echo "This is a test file with sensitive information." > test-file.txt
-
-      - name: Build the Docker image
-        run: |
-          docker build -t git-secret-protector-image .
-
       - name: Run encryption in Docker container
         run: |
+          docker build -t git-secret-protector-image .
           docker run -v ${PWD}:/workspace \
             --entrypoint "sh" \
             git-secret-protector-image \
-            -c "cd /workspace && cat .git_secret_protector/cache/test-filter_key_iv.json && git-secret-protector encrypt-files test-filter"
+            -c "cd /workspace && git-secret-protector encrypt-files test-filter"
 
       - name: Verify encrypted file
         run: |
-          cat test-file.txt
-          
-          # Verify that the file is encrypted (e.g., check for the presence of a specific magic header)
           if grep -q "ENCRYPTED" test-file.txt; then
             echo "File is successfully encrypted."
           else
@@ -90,16 +80,12 @@ jobs:
           fi
 
       - name: Run decryption using GitHub Action
-        uses: ./  # This assumes the action.yml is in the root of your repository
+        uses: ./
         with:
           filter: test-filter
 
       - name: Verify decrypted file
         run: |
-          cat .git_secret_protector/logs/git_secret_protector.log
-          cat test-file.txt
-
-          # Verify that the file was successfully decrypted
           if grep -q "This is a test file with sensitive information." test-file.txt; then
             echo "File is successfully decrypted."
           else
