@@ -87,7 +87,7 @@ jobs:
 
       - name: Verify decrypted file
         run: |
-          if grep -q "This is a test file with sensitive information." test-file.txt; then
+          if grep -q "This is a secret test file." test-file.txt; then
             echo "File is successfully decrypted."
           else
             echo "File decryption failed!" && exit 1
