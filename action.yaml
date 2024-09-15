@@ -1,0 +1,20 @@
+name: 'Git Secret Protector Action'
+description: 'Decrypts secrets in a protected repository using git-secret-protector.'
+author: 'Duc Duong <duc.duong@c0x12c.com>'
+
+branding:
+  icon: unlock
+  color: green
+
+inputs:
+  filter:
+    description: 'The filter name to use with git-secret-protector.'
+    required: true
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  entrypoint: '/main.sh'
+  post-entrypoint: /post.sh
+  args:
+    - ${{ inputs.filter }}
