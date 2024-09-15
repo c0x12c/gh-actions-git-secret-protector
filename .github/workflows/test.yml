@@ -2,13 +2,14 @@
 name: GitHub Actions Plugin Unit Test
 
 on:
-  push:
-    branches:
-      - master
-
   pull_request:
     branches:
       - master
+    paths:
+      - action.yml
+      - Dockerfile
+      - main.sh
+      - post.sh
 
 jobs:
   test:
