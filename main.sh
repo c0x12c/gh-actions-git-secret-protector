@@ -1,6 +1,4 @@
-#!/bin/sh -l
-
-set -e
+#!/bin/sh
 
 FILTER_NAME="$1"
 
