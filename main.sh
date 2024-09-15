@@ -11,6 +11,8 @@ fi
 
 export PATH="/root/.local/bin:$PATH"
 
+ls -la /root/.local/bin
+
 # Debugging the PATH to ensure git-secret-protect is in it
 echo "PATH: $PATH"
 which git-secret-protect || { echo "git-secret-protect not found"; exit 1; }

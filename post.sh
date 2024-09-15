@@ -11,6 +11,8 @@ fi
 
 export PATH="/root/.local/bin:$PATH"
 
+ls -la /root/.local/bin
+
 echo "Encrypting files using filter: $FILTER_NAME"
 
 git-secret-protect encrypt-files "$FILTER_NAME"
