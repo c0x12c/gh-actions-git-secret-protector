@@ -58,15 +58,30 @@ jobs:
           git add .
           git commit --allow-empty-message --message=''
 
-      - name: Run git-secret-protector action
-        uses: ./
-        with:
-          filter: 'test-filter'
-
-      - name: Verify decrypted files
+      - name: Prepare test file
         run: |
-          if grep -q "This is a secret test file." test-file.txt; then
-            echo "Decryption success!"
+          echo "This is a test file with sensitive information." > test-file.txt
+
+      - name: Encrypt the test file
+        run: git-secret-protect encrypt-files test-filter
+
+      - name: Verify encrypted file
+        run: |
+          # Verify that the file is encrypted (e.g., check for the presence of a specific magic header)
+          if grep -q "ENCRYPTED" test-file.txt; then
+            echo "File is successfully encrypted."
           else
-            echo "Decryption failed!" && exit 1
-          fiØ
+            echo "File encryption failed!" && exit 1
+          fi
+
+      - name: Decrypt the test file
+        run: git-secret-protect decrypt-files test-filter
+
+      - name: Verify decrypted file
+        run: |
+          # Verify that the file was successfully decrypted
+          if grep -q "This is a test file with sensitive information." test-file.txt; then
+            echo "File is successfully decrypted."
+          else
+            echo "File decryption failed!" && exit 1
+          fi
