@@ -11,4 +11,4 @@ ENV PATH="/root/.local/bin:$PATH"
 COPY main.sh /main.sh
 COPY post.sh /post.sh
 
-ENTRYPOINT ["/bin/sh", "-c", "/main.sh"]
+ENTRYPOINT ["/main.sh"]
