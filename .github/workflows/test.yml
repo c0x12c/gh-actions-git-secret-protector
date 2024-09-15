@@ -80,6 +80,8 @@ jobs:
 
       - name: Verify encrypted file
         run: |
+          cat test-file.txt
+          
           # Verify that the file is encrypted (e.g., check for the presence of a specific magic header)
           if grep -q "ENCRYPTED" test-file.txt; then
             echo "File is successfully encrypted."
@@ -94,6 +96,9 @@ jobs:
 
       - name: Verify decrypted file
         run: |
+          cat .git_secret_protector/logs/git_secret_protector.log
+          cat test-file.txt
+
           # Verify that the file was successfully decrypted
           if grep -q "This is a test file with sensitive information." test-file.txt; then
             echo "File is successfully decrypted."
