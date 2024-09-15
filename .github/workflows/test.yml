@@ -70,7 +70,7 @@ jobs:
         run: |
           docker run -v ${PWD}:/workspace \
             git-secret-protector-image \
-            sh -c "cd /workspace && git-secret-protector encrypt-files test-filter"
+            sh -c "git-secret-protector encrypt-files test-filter"
 
       - name: Verify encrypted file
         run: |
