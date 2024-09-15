@@ -34,17 +34,17 @@ jobs:
         run: |
           echo "test-file.txt filter=test-filter" > .gitattributes
 
-      - name: Generate AES Key and IV
+      - name: Generate AES Key and IV using OpenSSL
         run: |
-          import os
-          import json
-          key_iv_data = {
-              "aes_key": os.urandom(32).hex(),  # 256 bits for AES-256
-              "iv": os.urandom(16).hex()  # 128 bits (AES block size)
-          }
-          os.makedirs(".git_secret_protector/cache", exist_ok=True)
-          with open(".git_secret_protector/cache/test-filter_key_iv.json", "w") as f:
-              json.dump(key_iv_data, f)
+          # Generate AES key (256 bits) and IV (128 bits) using OpenSSL
+          AES_KEY=$(openssl rand -hex 32)  # 256 bits for AES-256
+          IV=$(openssl rand -hex 16)  # 128 bits (AES block size)
+
+          # Create directory for key/IV storage
+          mkdir -p .git_secret_protector/cache
+
+          # Write key and IV to JSON file
+          echo "{\"aes_key\": \"$AES_KEY\", \"iv\": \"$IV\"}" > .git_secret_protector/cache/test-filter_key_iv.json
 
       - name: Create a test file for encryption/decryption
         run: |
