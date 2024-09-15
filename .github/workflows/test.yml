@@ -37,8 +37,8 @@ jobs:
       - name: Generate AES Key and IV using OpenSSL
         run: |
           # Generate a 32-byte AES key (256 bits) and a 16-byte IV (128 bits)
-          AES_KEY=$(openssl rand -hex 32)  # 32 bytes = 256 bits for AES-256
-          IV=$(openssl rand -hex 16)  # 16 bytes = 128 bits (AES block size)
+          AES_KEY=$(openssl rand 32 | base64)  # Generate and encode in Base64
+          IV=$(openssl rand 16 | base64)  # Generate and encode in Base64
 
           # Create directory for key/IV storage
           mkdir -p .git_secret_protector/cache
