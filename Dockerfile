@@ -15,4 +15,4 @@ RUN echo $PATH
 COPY main.sh /main.sh
 COPY post.sh /post.sh
 
-ENTRYPOINT ["/main.sh"]
+ENTRYPOINT ["bash", "-c", "/main.sh"]
