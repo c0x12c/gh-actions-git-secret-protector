@@ -62,6 +62,10 @@ jobs:
         run: |
           echo "This is a test file with sensitive information." > test-file.txt
 
+      - name: Build the Docker image
+        run: |
+          docker build -t git-secret-protector-image .
+
       - name: Run encryption in Docker container
         run: |
           docker run -v ${PWD}:/workspace \
