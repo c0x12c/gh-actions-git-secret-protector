@@ -15,6 +15,6 @@ runs:
   using: 'docker'
   image: 'Dockerfile'
   entrypoint: '/main.sh'
-  post-entrypoint: /post.sh
+  post-entrypoint: '/post.sh'
   args:
     - ${{ inputs.filter }}
