@@ -17,18 +17,19 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          token: ${{ steps.github-app-token.outputs.token }}
+          # Make sure the value of GITHUB_TOKEN will not be persisted in repo's config
+          persist-credentials: false
 
       - name: Create .gitattributes file for testing
         run: |
           echo "test-file.txt filter=test-filter" > .gitattributes
-          git add .gitattributes
-          git commit --allow-empty-message --message='Add .gitattributes for testing'
 
       - name: Create a test file for encryption/decryption
         run: |
           echo "This is a secret test file." > test-file.txt
-          git add test-file.txt
-          git commit --allow-empty-message --message='Add test file for encryption'
 
       - name: Modify action.yaml to use local Dockerfile
         run: |
