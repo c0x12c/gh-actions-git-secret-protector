@@ -6,9 +6,9 @@ RUN pip install --no-cache-dir pipx \
     && pipx install git-secret-protector
 
 # Manually set the PATH in the Dockerfile
-ENV PATH="/root/.local/bin:${PATH}"
+ENV PATH="/root/.local/bin:$PATH"
 
 COPY main.sh /main.sh
 COPY post.sh /post.sh
 
-ENTRYPOINT ["/main.sh"]
+ENTRYPOINT ["sh", "-c", "/main.sh"]
