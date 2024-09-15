@@ -9,4 +9,4 @@ fi
 
 echo "Running git-secret-protector for filter: $FILTER_NAME"
 
-git-secret-protector encrypt-files "$FILTER_NAME"
+git-secret-protector decrypt-files "$FILTER_NAME"
