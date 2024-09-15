@@ -69,8 +69,8 @@ jobs:
       - name: Run encryption in Docker container
         run: |
           docker run -v ${PWD}:/workspace \
-          git-secret-protector-image \
-          bash -c "cd /workspace && git-secret-protect encrypt-files test-filter"
+            git-secret-protector-image \
+            bash -c "cd /workspace && git-secret-protect encrypt-files test-filter"
 
       - name: Verify encrypted file
         run: |
@@ -81,11 +81,10 @@ jobs:
             echo "File encryption failed!" && exit 1
           fi
 
-      - name: Run decryption in Docker container
-        run: |
-          docker run -v ${PWD}:/workspace \
-            git-secret-protector-image \
-            bash -c "cd /workspace && git-secret-protect decrypt-files test-filter"
+      - name: Run decryption using GitHub Action
+        uses: ./  # This assumes the action.yml is in the root of your repository
+        with:
+          filter: test-filter
 
       - name: Verify decrypted file
         run: |

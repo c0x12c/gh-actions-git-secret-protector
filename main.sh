@@ -7,10 +7,6 @@ if [ -z "$FILTER_NAME" ]; then
     exit 1
 fi
 
-# Debugging the PATH to ensure git-secret-protect is in it
-ls -la /root/.local/bin
-echo "PATH: $PATH"
+echo "Running git-secret-protector for filter: $FILTER_NAME"
 
-echo "Decrypting files using filter: $FILTER_NAME"
-
-git-secret-protector decrypt-files "$FILTER_NAME"
+git-secret-protector encrypt-files "$FILTER_NAME"
