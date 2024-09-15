@@ -12,6 +12,10 @@ jobs:
     name: Publish to GHCR
     runs-on: ubuntu-latest
 
+    permissions:
+      packages: write
+      contents: read
+
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
