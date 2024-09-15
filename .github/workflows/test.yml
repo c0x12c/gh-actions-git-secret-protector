@@ -44,7 +44,12 @@ jobs:
           mkdir -p .git_secret_protector/cache
 
           # Write key and IV to JSON file
-          echo "{\"aes_key\": \"$AES_KEY\", \"iv\": \"$IV\"}" > .git_secret_protector/cache/test-filter_key_iv.json
+          cat <<EOF > .git_secret_protector/cache/test-filter_key_iv.json
+          {
+            "aes_key": "$AES_KEY",
+            "iv": "$IV"
+          }
+          EOF
 
       - name: Create a test file for encryption/decryption
         run: |
