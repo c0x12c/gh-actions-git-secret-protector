@@ -9,6 +9,8 @@ if [ -z "$FILTER_NAME" ]; then
     exit 1
 fi
 
+export PATH="/root/.local/bin:$PATH"
+
 echo "Encrypting files using filter: $FILTER_NAME"
 
 git-secret-protect encrypt-files "$FILTER_NAME"

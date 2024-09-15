@@ -9,6 +9,8 @@ if [ -z "$FILTER_NAME" ]; then
     exit 1
 fi
 
+export PATH="/root/.local/bin:$PATH"
+
 # Debugging the PATH to ensure git-secret-protect is in it
 echo "PATH: $PATH"
 which git-secret-protect || { echo "git-secret-protect not found"; exit 1; }

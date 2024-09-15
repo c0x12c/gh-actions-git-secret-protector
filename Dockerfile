@@ -8,9 +8,7 @@ RUN apk add --no-cache bash \
     && pipx install git-secret-protector
 
 # Ensure the installed binaries are in the system's PATH
-RUN echo $PATH
 ENV PATH="$PATH:/root/.local/bin"
-RUN echo $PATH
 
 COPY main.sh /main.sh
 COPY post.sh /post.sh
