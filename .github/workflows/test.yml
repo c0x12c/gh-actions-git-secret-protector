@@ -62,8 +62,11 @@ jobs:
         run: |
           echo "This is a test file with sensitive information." > test-file.txt
 
-      - name: Encrypt the test file
-        run: git-secret-protect encrypt-files test-filter
+      - name: Run encryption in Docker container
+        run: |
+          docker run -v ${PWD}:/workspace \
+          git-secret-protector-image \
+          bash -c "cd /workspace && git-secret-protect encrypt-files test-filter"
 
       - name: Verify encrypted file
         run: |
@@ -74,8 +77,11 @@ jobs:
             echo "File encryption failed!" && exit 1
           fi
 
-      - name: Decrypt the test file
-        run: git-secret-protect decrypt-files test-filter
+      - name: Run decryption in Docker container
+        run: |
+          docker run -v ${PWD}:/workspace \
+            git-secret-protector-image \
+            bash -c "cd /workspace && git-secret-protect decrypt-files test-filter"
 
       - name: Verify decrypted file
         run: |
