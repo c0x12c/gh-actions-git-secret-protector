@@ -68,10 +68,10 @@ jobs:
 
       - name: Run encryption in Docker container
         run: |
-          ls -la .
           docker run -v ${PWD}:/workspace \
+            --entrypoint "sh" \
             git-secret-protector-image \
-            sh -c "cd workspace && ls -a . && git-secret-protector encrypt-files test-filter"
+            -c "cd /workspace && git-secret-protector encrypt-files test-filter"
 
       - name: Verify encrypted file
         run: |
