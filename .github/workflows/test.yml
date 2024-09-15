@@ -34,6 +34,18 @@ jobs:
         run: |
           echo "test-file.txt filter=test-filter" > .gitattributes
 
+      - name: Generate AES Key and IV
+        run: |
+          import os
+          import json
+          key_iv_data = {
+              "aes_key": os.urandom(32).hex(),  # 256 bits for AES-256
+              "iv": os.urandom(16).hex()  # 128 bits (AES block size)
+          }
+          os.makedirs(".git_secret_protector/cache", exist_ok=True)
+          with open(".git_secret_protector/cache/test-filter_key_iv.json", "w") as f:
+              json.dump(key_iv_data, f)
+
       - name: Create a test file for encryption/decryption
         run: |
           echo "This is a secret test file." > test-file.txt
