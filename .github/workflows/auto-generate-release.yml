@@ -50,8 +50,3 @@ jobs:
           title: $version
           branch: 'master|v[0-9]+'
           token: ${{ steps.github-app-token.outputs.token }}
-
-      - name: Create or update major tag
-        uses: Actions-R-Us/actions-tagger@v2
-        with:
-          publish_latest_tag: true
