@@ -1,7 +1,6 @@
 FROM python:3.12-alpine as build
 
 RUN apk add --update \
-    python \
     curl \
     which \
     bash
