@@ -13,7 +13,7 @@ inputs:
 
 runs:
   using: 'docker'
-  image: 'docker://ghcr.io/c0x12c/gh-actions-git-secret-protector:1.0'
+  image: 'docker://ghcr.io/c0x12c/gh-actions-git-secret-protector:ducdt-install-gcloud-cli-in-docker-container'
   entrypoint: '/main.sh'
   post-entrypoint: '/post.sh'
   args:
