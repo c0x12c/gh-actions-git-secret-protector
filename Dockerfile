@@ -8,7 +8,7 @@ RUN apk add --update \
 RUN curl -sSL https://sdk.cloud.google.com | bash
 
 RUN pip install --no-cache-dir pipx \
-    && pipx install git-secret-protector
+    && pipx install git-secret-protector==0.8.0
 
 FROM python:3.12-alpine
 

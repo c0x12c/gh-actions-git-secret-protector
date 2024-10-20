@@ -7,10 +7,8 @@ if [ -z "$FILTER_NAME" ]; then
     exit 1
 fi
 
-echo "Encrypting files using filter: $FILTER_NAME"
+echo "Cleaning staged data for filter: $FILTER_NAME"
 
-git-secret-protector encrypt-files "$FILTER_NAME"
-
-rm -rf "${PWD}/.git_secret_protector"
+git-secret-protector clean-filter "$FILTER_NAME"
 
 echo "Cleanup completed."

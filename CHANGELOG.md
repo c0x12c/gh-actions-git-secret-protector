@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 **Note**: Ensure to keep this changelog updated with every new release or change made to the project.
 
+## [v1.1.0] - 2024-10-20
+
+### Changed
+- Upgrade `git-secret-protector` to v0.8.0
+
 ## [v1.0.6] - 2024-09-17
 
 ### Added
