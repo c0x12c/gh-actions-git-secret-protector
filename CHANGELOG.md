@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 **Note**: Ensure to keep this changelog updated with every new release or change made to the project.
 
+## [v1.2.1] - 2025-01-23
+
+### Changed
+- Remove files in `.git_secret_protector` in the post-job
+
 ## [v1.1.1] - 2024-10-21
 
 ### Changed
