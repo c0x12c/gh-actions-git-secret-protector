@@ -11,4 +11,6 @@ echo "Cleaning staged data for filter: $FILTER_NAME"
 
 git-secret-protector clean-filter "$FILTER_NAME"
 
+rm -rf .git_secret_protector/
+
 echo "Cleanup completed."
