@@ -43,8 +43,8 @@ jobs:
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
-          username: spartan-ductduong
-          password: ${{ secrets.PAT }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build & push
         uses: docker/build-push-action@v4
