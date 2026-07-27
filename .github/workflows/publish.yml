@@ -3,9 +3,11 @@ name: Publish to GHCR
 
 on:
   push:
+    branches:
+      # TEMP: validate the gsp v1.7.0 build + GHCR push on this branch. Remove before merge.
+      - ducdt/fix-ghcr-app-publish
     tags:
       - 'v[0-9]+.[0-9]+.*'
-  workflow_dispatch: {}
 
 jobs:
   publish:
