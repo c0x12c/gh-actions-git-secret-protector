@@ -9,7 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ## [v1.2.0] - 2026-07-27
 
 ### Changed
-- Upgrade `git-secret-protector` to `v1.7.0` (from v1.2.4), rebuilding the `:1` image.
+- Upgrade `git-secret-protector` to `v1.7.1` (from v1.2.4), rebuilding the `:1` image.
 
 ### Fixed
 - Restore GHCR publishing, which had been broken since v1.1.2 (`installation not allowed to Write organization package`). The workflow now authenticates with the built-in `GITHUB_TOKEN` (`packages: write`) after granting this repository the Write role under the package's *Manage Actions access*, replacing the expired user PAT (a third-party GitHub App installation token is not permitted to write org-owned packages).
