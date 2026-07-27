@@ -3,9 +3,6 @@ name: Publish to GHCR
 
 on:
   push:
-    branches:
-      # TEMP: validate GHCR auth on this branch before merge. Remove before merging.
-      - ducdt/fix-ghcr-app-publish
     tags:
       - 'v[0-9]+.[0-9]+.*'
   workflow_dispatch: {}
@@ -44,8 +41,9 @@ jobs:
             type=raw,value=latest,enable={{is_default_branch}}
 
       # The package's "Manage Actions access" grants this repo the Write role, so the
-      # workflow GITHUB_TOKEN (packages: write) can push. No PAT or GitHub App needed
-      # (the App installation is not permitted to write org-owned packages).
+      # built-in GITHUB_TOKEN (packages: write) can push. No PAT or third-party GitHub
+      # App is needed: the App installation is not permitted to write org-owned
+      # packages, and the previous user PAT expired.
       - name: Login to GHCR
         uses: docker/login-action@v2
         with:
