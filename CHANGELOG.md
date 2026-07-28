@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 **Note**: Ensure to keep this changelog updated with every new release or change made to the project.
 
+## [v1.1.7] - 2026-07-28
+
+### Changed
+- Upgrade `git-secret-protector` to `v1.8.0` (fail-closed decrypt on unsupported format + `doctor` supported-schemes).
+
 ## [v1.1.6] - 2026-07-27
 
 ### Changed
