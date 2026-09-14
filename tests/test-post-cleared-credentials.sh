@@ -154,6 +154,31 @@ fi
 check "case5-explanation-absent" "no" "$EXPLANATION_PRESENT" "$RESULTS"
 check "case5-exit-code" "0" "$EXIT_CODE" "$RESULTS"
 
+# Test case 6: a genuine key-access failure that happens to run with no region set. Same
+# "Failed to retrieve AES key" prefix, but no malformed endpoint, so it must not be explained away.
+cat > "$STUB" <<'STUB_EOF'
+#!/bin/sh
+echo "Encrypt files command failed: Failed to retrieve AES key and IV for filter 'test-filter': An error occurred (AccessDeniedException) when calling the GetParameter operation"
+exit 0
+STUB_EOF
+chmod +x "$STUB"
+
+export AWS_REGION=""
+export AWS_DEFAULT_REGION=""
+
+OUTPUT=$(sh "$POST_SH" test-filter 2>&1)
+EXIT_CODE=$?
+
+if echo "$OUTPUT" | grep -q "This is expected when another post step"; then
+    EXPLANATION_PRESENT="yes"
+else
+    EXPLANATION_PRESENT="no"
+fi
+
+check "case6-explanation-absent" "no" "$EXPLANATION_PRESENT" "$RESULTS"
+check "case6-error-still-present" "yes" "$(echo "$OUTPUT" | grep -q AccessDeniedException && echo yes || echo no)" "$RESULTS"
+check "case6-exit-code" "0" "$EXIT_CODE" "$RESULTS"
+
 PASS=$(grep -c "^PASS " "$RESULTS" 2>/dev/null)
 if [ -z "$PASS" ]; then
     PASS=0
