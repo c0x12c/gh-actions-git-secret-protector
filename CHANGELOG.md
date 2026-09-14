@@ -9,7 +9,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ## [v1.1.8] - 2026-09-14
 
 ### Fixed
-- Explain cleared AWS credentials scenario in post-job cleanup when `aws-actions/configure-aws-credentials` post step runs before this action and exports empty strings, which causes a malformed STS hostname in `clean-filter`.
+- Explain cleared AWS credentials scenario in post-job cleanup when `aws-actions/configure-aws-credentials` post step runs before this action and exports empty strings, which causes a malformed STS hostname in `clean-filter`. The explanation requires both the malformed-endpoint marker and empty region variables, so a genuine key-access failure (`AccessDenied`, missing SSM parameter) is still reported as a failure.
+- On a persistent or self-hosted runner, the explanation now says that files stay decrypted in the workspace and names the remedy. Cleanup only self-resolves on an ephemeral runner.
+
+### Notes
+- Message only. No change to inputs, exit status, or the encrypt path.
 
 ## [v1.1.7] - 2026-07-28
 
