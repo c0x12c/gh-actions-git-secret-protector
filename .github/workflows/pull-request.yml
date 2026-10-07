@@ -22,7 +22,7 @@ jobs:
       # dependabot-triggered runs, which made this job die before it tested anything,
       # and this job only reads a public repo and builds locally - it never pushes.
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: ${{ github.head_ref }}
           # Make sure the value of GITHUB_TOKEN will not be persisted in repo's config
