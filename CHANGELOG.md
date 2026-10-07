@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 **Note**: Ensure to keep this changelog updated with every new release or change made to the project.
 
+## [v1.1.9] - 2026-10-07
+
+### Changed
+- Replace the `pip install pipx` + `pipx install` layers in the build stage with `uv tool install`, pinned to `ghcr.io/astral-sh/uv:0.12.23` by tag and digest. The tool shim still lands in `/root/.local/bin`, so the existing `COPY --from=build /root/.local` and `PATH` in the final stage are unchanged.
+- Bump the pinned `git-secret-protector` version from `1.8.0` to `1.13.0`.
+- Add a v2-scheme leg to the pull-request round-trip workflow alongside the existing v1 leg, and extract the inline step bodies into checked-in scripts under `.github/scripts/pull-request/` (`make-fixture.sh`, `assert-encrypted.sh`, `assert-roundtrip.sh`) so the two legs share one code path instead of drifting apart.
+
+### Notes
+- No change to inputs, exit status, or the encrypt/decrypt path. The install swap and the version bump are build-time; the second round-trip leg is test coverage.
+- The published image is referenced through the floating `:1` major tag, so rebuilding it reaches every consumer repository on its next run. The round-trip now covers both wire schemes because the estate is mid-migration and a v1-only check would pass while un-migrated repositories broke.
+
 ## [v1.1.8] - 2026-09-14
 
 ### Fixed
