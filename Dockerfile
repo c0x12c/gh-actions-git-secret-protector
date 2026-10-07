@@ -1,4 +1,4 @@
-FROM python:3.12-alpine as build
+FROM python:3.14-alpine as build
 
 RUN apk add --update \
     curl \
@@ -21,7 +21,7 @@ ENV UV_PYTHON_PREFERENCE=only-system
 COPY requirements.txt /tmp/requirements.txt
 RUN uv tool install git-secret-protector --constraints /tmp/requirements.txt
 
-FROM python:3.12-alpine
+FROM python:3.14-alpine
 
 COPY --from=build /root/google-cloud-sdk /root/google-cloud-sdk
 COPY --from=build /root/.local /root/.local
