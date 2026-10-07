@@ -7,8 +7,11 @@ on:
     paths:
       - action.yml
       - Dockerfile
+      - requirements.txt
       - main.sh
       - post.sh
+      - .github/scripts/pull-request/**
+      - .github/workflows/pull-request.yml
 
 jobs:
   test:
@@ -30,30 +33,13 @@ jobs:
           # Make sure the value of GITHUB_TOKEN will not be persisted in repo's config
           persist-credentials: false
 
-      - name: Create .gitattributes file for testing
+      - name: Prepare v1 fixture
         run: |
-          echo "test-file.txt filter=test-filter" > .gitattributes
+          .github/scripts/pull-request/make-fixture.sh test-filter test-file.txt
 
-      - name: Generate AES Key and IV using OpenSSL
+      - name: Prepare v2 fixture
         run: |
-          # Generate a 32-byte AES key (256 bits) and a 16-byte IV (128 bits)
-          AES_KEY=$(openssl rand 32 | base64)
-          IV=$(openssl rand 16 | base64)
-
-          # Create directory for key/IV storage
-          mkdir -p .git_secret_protector/cache
-
-          # Write key and IV to JSON file
-          cat <<EOF > .git_secret_protector/cache/test-filter_key_iv.json
-          {
-            "aes_key": "$AES_KEY",
-            "iv": "$IV"
-          }
-          EOF
-
-      - name: Prepare test file
-        run: |
-          echo "This is a secret test file." > test-file.txt
+          .github/scripts/pull-request/make-fixture.sh test-filter-v2 test-file-v2.txt 2
 
       - name: Modify action.yaml to use local Dockerfile
         run: |
@@ -63,31 +49,40 @@ jobs:
           git add .
           git commit --allow-empty-message --message=''
 
-      - name: Run encryption in Docker container
+      - name: Build local image
         run: |
           docker build -t git-secret-protector-image .
-          docker run -v ${PWD}:/workspace \
-            --entrypoint "sh" \
-            git-secret-protector-image \
-            -c "cd /workspace && git-secret-protector encrypt-files test-filter"
 
-      - name: Verify encrypted file
+      - name: Encrypt v1 file in Docker container
         run: |
-          if grep -q "ENCRYPTED" test-file.txt; then
-            echo "File is successfully encrypted."
-          else
-            echo "File encryption failed!" && exit 1
-          fi
+          docker run -v ${PWD}:/workspace --entrypoint "sh" git-secret-protector-image -c "cd /workspace && git-secret-protector encrypt-files test-filter"
 
-      - name: Run decryption using GitHub Action
+      - name: Verify v1 file is encrypted
+        run: |
+          .github/scripts/pull-request/assert-encrypted.sh test-file.txt v1
+
+      - name: Run v1 decryption using GitHub Action
         uses: ./
         with:
           filter: test-filter
 
-      - name: Verify decrypted file
+      - name: Verify v1 round-trip
         run: |
-          if grep -q "This is a secret test file." test-file.txt; then
-            echo "File is successfully decrypted."
-          else
-            echo "File decryption failed!" && exit 1
-          fi
+          .github/scripts/pull-request/assert-roundtrip.sh test-file.txt
+
+      - name: Encrypt v2 file in Docker container
+        run: |
+          docker run -v ${PWD}:/workspace --entrypoint "sh" git-secret-protector-image -c "cd /workspace && git-secret-protector encrypt-files test-filter-v2"
+
+      - name: Verify v2 file is encrypted
+        run: |
+          .github/scripts/pull-request/assert-encrypted.sh test-file-v2.txt v2
+
+      - name: Run v2 decryption using GitHub Action
+        uses: ./
+        with:
+          filter: test-filter-v2
+
+      - name: Verify v2 round-trip
+        run: |
+          .github/scripts/pull-request/assert-roundtrip.sh test-file-v2.txt
