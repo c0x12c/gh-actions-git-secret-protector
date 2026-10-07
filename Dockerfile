@@ -14,7 +14,12 @@ COPY --from=ghcr.io/astral-sh/uv:0.12.23@sha256:61d393e44e249f2e4b526b6c7ddcecce
 # to the exact python3.12-alpine already present in this layer.
 ENV UV_PYTHON_PREFERENCE=only-system
 
-RUN uv tool install 'git-secret-protector==1.13.0'
+# The version lives in requirements.txt rather than inline here so dependabot's pip
+# ecosystem can see it: nothing parses a version inside a RUN string. Still an exact
+# pin - this image publishes to the floating `:1` tag, so the version has to stay a
+# reviewed decision rather than whatever a rebuild happens to resolve.
+COPY requirements.txt /tmp/requirements.txt
+RUN uv tool install git-secret-protector --constraints /tmp/requirements.txt
 
 FROM python:3.12-alpine
 

@@ -12,6 +12,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Replace the `pip install pipx` + `pipx install` layers in the build stage with `uv tool install`, pinned to `ghcr.io/astral-sh/uv:0.12.23` by tag and digest. The tool shim still lands in `/root/.local/bin`, so the existing `COPY --from=build /root/.local` and `PATH` in the final stage are unchanged.
 - Bump the pinned `git-secret-protector` version from `1.8.0` to `1.13.0`.
 - Add a v2-scheme leg to the pull-request round-trip workflow alongside the existing v1 leg, and extract the inline step bodies into checked-in scripts under `.github/scripts/pull-request/` (`make-fixture.sh`, `assert-encrypted.sh`, `assert-roundtrip.sh`) so the two legs share one code path instead of drifting apart.
+- Move the CLI pin into `requirements.txt`, consumed by the Dockerfile as a `uv` constraints file. The pin stays exact; it now sits somewhere dependabot can read, since no ecosystem parses a version inside a `RUN` string. Dependabot opens minor and patch bumps; major is held for a human, because it changes the encryption client every consumer decrypts with.
+
+### Fixed
+- `.github/dependabot.yml` was not valid YAML - a stray `Ø` on its last line, present since the initial version - so dependabot had never run on this repository and no update PR had ever been opened. Removed it and added the `pip` and `docker` ecosystems.
 
 ### Notes
 - No change to inputs, exit status, or the encrypt/decrypt path. The install swap and the version bump are build-time; the second round-trip leg is test coverage.

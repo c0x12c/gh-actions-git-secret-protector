@@ -11,4 +11,28 @@ updates:
       github-actions:
         patterns:
           - '*'
-  Ø
+
+  # requirements.txt holds the CLI pin that the Dockerfile consumes as a uv constraints
+  # file, because no ecosystem parses a version inside a RUN string.
+  - package-ecosystem: pip
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: ''
+    labels: [ ]
+    # A major bump changes the encryption client every consumer decrypts with, reaching
+    # them all through the floating `:1` tag. That stays a human decision.
+    ignore:
+      - dependency-name: git-secret-protector
+        update-types:
+          - version-update:semver-major
+
+  # Covers the base image and the pinned uv build stage.
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: ''
+    labels: [ ]

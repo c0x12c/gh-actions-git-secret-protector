@@ -1,0 +1,1 @@
+git-secret-protector==1.13.0
