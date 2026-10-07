@@ -9,6 +9,8 @@ on:
       - Dockerfile
       - main.sh
       - post.sh
+      - .github/scripts/pull-request/**
+      - .github/workflows/pull-request.yml
 
 jobs:
   test:

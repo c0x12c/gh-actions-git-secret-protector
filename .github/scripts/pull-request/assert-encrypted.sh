@@ -1,28 +1,35 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Assert a file carries the ENCRYPTED magic header AND the version byte that
-# follows it matches the expected scheme. Checking only for "ENCRYPTED" would
-# let a v1-only ciphertext pass as if it proved v2 coverage.
 # Usage: assert-encrypted.sh <file> <v1|v2>
+# Checks the magic header AT BYTE ZERO: searching for it anywhere lets a file with
+# leading junk pass, after which the "version byte" read is really the file's first
+# byte. The size check matters because "not 0x02" is also true of an absent byte.
 
 FILE="${1:?usage: assert-encrypted.sh <file> <v1|v2>}"
 SCHEME="${2:?usage: assert-encrypted.sh <file> <v1|v2>}"
 
-if ! grep -q "ENCRYPTED" "${FILE}"; then
-  echo "assert-encrypted: FAIL - ${FILE} does not carry the ENCRYPTED magic header"
+MAGIC="ENCRYPTED"
+MAGIC_LEN=${#MAGIC}
+
+if [ ! -f "${FILE}" ]; then
+  echo "assert-encrypted: FAIL - ${FILE} does not exist"
   exit 1
 fi
 
-AFTER_MARKER=$(sed 's/^ENCRYPTED//' "${FILE}")
-NEXT_BYTE_HEX=$(printf '%s' "${AFTER_MARKER}" | head -c1 | od -An -tx1 | tr -d ' \n')
+HEADER=$(head -c "${MAGIC_LEN}" "${FILE}")
+if [ "${HEADER}" != "${MAGIC}" ]; then
+  echo "assert-encrypted: FAIL - ${FILE} does not start with the ${MAGIC} magic header"
+  exit 1
+fi
 
-# A file holding the bare magic header and nothing else would otherwise satisfy the
-# v1 branch below, since "not 0x02" is true of an absent byte.
-if [ -z "${NEXT_BYTE_HEX}" ]; then
+SIZE=$(wc -c < "${FILE}" | tr -d ' ')
+if [ "${SIZE}" -le "${MAGIC_LEN}" ]; then
   echo "assert-encrypted: FAIL - ${FILE} carries the magic header but no payload follows it"
   exit 1
 fi
+
+NEXT_BYTE_HEX=$(head -c "$((MAGIC_LEN + 1))" "${FILE}" | tail -c 1 | od -An -tx1 | tr -d ' \n')
 
 case "${SCHEME}" in
   v2)
@@ -36,15 +43,11 @@ case "${SCHEME}" in
       echo "assert-encrypted: FAIL - expected v1 (no version byte), got v2 marker 0x02"
       exit 1
     fi
-    case "${NEXT_BYTE_HEX}" in
-      [0-9a-f][0-9a-f])
-        BYTE_VAL=$((16#${NEXT_BYTE_HEX}))
-        if [ "${BYTE_VAL}" -lt 32 ] || [ "${BYTE_VAL}" -gt 126 ]; then
-          echo "assert-encrypted: FAIL - byte after marker (0x${NEXT_BYTE_HEX}) is not base64-alphabet printable"
-          exit 1
-        fi
-        ;;
-    esac
+    BYTE_VAL=$((16#${NEXT_BYTE_HEX}))
+    if [ "${BYTE_VAL}" -lt 32 ] || [ "${BYTE_VAL}" -gt 126 ]; then
+      echo "assert-encrypted: FAIL - byte after header (0x${NEXT_BYTE_HEX}) is not base64-alphabet printable"
+      exit 1
+    fi
     ;;
   *)
     echo "assert-encrypted: FAIL - unknown scheme '${SCHEME}', expected v1 or v2"
@@ -52,4 +55,4 @@ case "${SCHEME}" in
     ;;
 esac
 
-echo "assert-encrypted: OK - ${FILE} matches scheme ${SCHEME} (next byte 0x${NEXT_BYTE_HEX})"
+echo "assert-encrypted: OK - ${FILE} matches scheme ${SCHEME} (byte after header 0x${NEXT_BYTE_HEX})"
