@@ -6,13 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 **Note**: Ensure to keep this changelog updated with every new release or change made to the project.
 
-## [Unreleased]
+## [v1.1.10] - 2026-11-07
+
+### Added
+- The image is published for `linux/arm64` as well as `linux/amd64`. A self-hosted runner in a Linux VM on Apple Silicon is arm64, and Docker refused to pull the action there with `no matching manifest for linux/arm64/v8`. The Dockerfile is unchanged: the same `python:3.12-alpine` base, the gcloud SDK and `git-secret-protector` all build and run on arm64.
 
 ### Fixed
 - The pull-request round-trip job died at its second step on dependabot PRs. Dependabot-triggered runs do not receive repository secrets, so creating the GitHub App token failed and every later step, including the whole v1/v2 round-trip, was skipped - a bump could therefore reach a green-looking PR having run no test. The job now checks out with the default token: it only reads a public repository and builds locally, so it never needed the App token, and dropping it also lowers the privilege this workflow runs with. The workflows that do need the App token are unchanged.
-
-### Notes
-- CI only. The published image is unaffected, so this needs no release.
 
 ## [v1.1.9] - 2026-10-07
 

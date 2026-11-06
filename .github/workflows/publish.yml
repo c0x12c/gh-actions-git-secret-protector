@@ -19,6 +19,10 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v4
 
+      # arm64 for self-hosted runners on Apple Silicon (a Linux VM on a Mac is arm64).
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v3
+
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v2
 
@@ -50,6 +54,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
+          platforms: linux/amd64,linux/arm64
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
